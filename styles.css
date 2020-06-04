@@ -1,0 +1,148 @@
+:root {
+  --white: #FFFFFF;
+  --light: #F7F7FB;
+  --muted: #b8b8d9;
+  --text: #7171a6;
+  --dark: #30343F;
+  --primary: #7D83FF;
+  --positive: #5AC379;
+  --negative: #E06363;
+  --dark-tp: #30343F20;
+  --positive-light: #F0FAF3;
+  --negative-light: #FCEEEE;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  background: var(--light);
+}
+
+main {
+  display: flex;
+  width: 100%;
+  max-width: 32rem;
+  padding: 0.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pattern {
+  background-image: url("./assets/bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 0.5rem;
+  height: 20rem;
+  width: 75%;
+  max-width: 32rem;
+  margin-right: -8rem;
+}
+
+.card-graph {
+  background: var(--white);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1rem 0.25rem var(--dark-tp);
+  width: 75%;
+  max-width: 24rem;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  margin-left: -8rem;
+  padding: 1rem;
+}
+
+.card-graph > .title,
+.card-graph > .details,
+.card-graph > .graph {
+  display: block;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.card-graph > .details {
+  display: flex;
+}
+
+.col {
+  flex-grow: 1;
+}
+
+
+
+h2 {
+  color: var(--text);
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.statistic-lg {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.text-muted {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.trending {
+  display: flex;
+}
+
+.arrow {
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  width: 2rem;
+}
+
+.up > .arrow {
+  background: var(--positive-light);
+}
+
+.down > .arrow {
+  background: var(--negative-light);
+}
+
+.fa-long-arrow-alt-up {
+  color: var(--positive);
+}
+
+.fa-long-arrow-alt-down {
+  color: var(--negative);
+}
+
+.up > .difference > p {
+  color: var(--positive)
+}
+
+.down > .difference > p {
+  color: var(--negative);
+}
+
+.difference {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+.difference > p {
+  font-family: Courier, monospace;
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: -0.125rem;
+}
+
+.graph {
+  height: 12rem;
+}

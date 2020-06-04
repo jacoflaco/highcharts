@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Highcharts Demo</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+</head>
+<body>
+<main>
+  <div class="pattern"></div>
+  <div class="card-graph">
+    <div class="title">
+      <h2>Monthly Recurring Revenue</h2>
+    </div>
+    <div class="details">
+      <div class="col">
+        <p>
+          <span class="statistic-lg" id='end-revenue'>$119,424</span> 
+          <span class="text-muted">from <span id='start-revenue'>$117,426</span></span></p>
+      </div>
+      <div class="col-auto">
+        <div class="trending up" id='trending'>
+          <div class="arrow">
+            <i class="fas fa-long-arrow-alt-up" id='trending-arrow'></i>
+          </div>
+          <div class="difference">
+            <p id="revenue-difference">1.7%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="graph" id='monthly-revenue'></div>
+  </div>
+</main>
+
+<script lang='js'>
+  async function getData(dataSource) {
+    const res = await fetch(dataSource);
+    const json = await res.json();
+    return json;
+  }
+  
+  async function drawGraph(element, data) {
+    let revenues = []
+    data.forEach(day => {
+      let plot = {
+        x: new Date(day.date).getTime(),
+        y: parseInt(day.revenue)
+      };
+      revenues.push(plot);
+    })
+    Highcharts.chart(element, {
+      legend: {
+        enabled: false
+      },
+      title: {
+        text: undefined
+      },
+      plotOptions: {
+        line: {
+          color: "#7D83FF",
+          lineWidth: 3,
+          marker: {
+            enabled: false
+          }
+        },
+      },
+      series: [
+        {
+          name: 'Revenue',
+          data: revenues,
+          label: {
+            enabled: false
+          }
+        }, 
+      ],
+      tooltip: {
+        formatter: function() {
+          const xValue = new Date(this.x);
+          const date = xValue.toDateString();
+          const yValue = numeral(this.y).format('$0,0');
+          const tooltip = `
+            <div>
+              <p>${date}</p><br>
+              <p>${yValue}</p>
+            </div>
+          `;
+          return tooltip;
+        }
+      },
+      xAxis: {
+        lineWidth: 0,
+        minorGridLineWidth: 0,
+        minorTickLength: 0,
+        tickLength: 0,
+        labels: {
+          type: 'datetime',
+          format: '{value:%b %e}',
+          style: {
+            color: '#b8b8d9'
+          }
+        }
+      },
+      yAxis: {
+        title: {
+          enabled: false,
+        },
+        gridLineColor: "transparent",
+        labels: {
+          style: {
+            color: '#b8b8d9'
+          }
+        }
+      },
+    });
+  }
+
+  function setTotals(revenues) {
+    const startRevenue = revenues[0].revenue;
+    const endRevenue = revenues[revenues.length - 1].revenue;
+    const revenueDifferencePercentage = (endRevenue - startRevenue) / endRevenue * 100;
+    const trending = revenueDifferencePercentage > 0 ? 'up' : 'down';
+
+    // update end revenue
+    document.querySelector('#end-revenue').innerHTML = numeral(endRevenue).format('$0,0');
+
+    // update start revenue
+    document.querySelector('#start-revenue').innerHTML = numeral(startRevenue).format('$0,0');
+
+    // update trending classes
+    document.querySelector('#trending').className = '';
+    document.querySelector('#trending').classList.add('trending')
+    document.querySelector('#trending').classList.add(trending);
+
+    // update trending arrow
+    document.querySelector('#trending-arrow').className = '';
+    document.querySelector('#trending-arrow').classList.add('fas')
+    document.querySelector('#trending-arrow').classList.add(`fa-long-arrow-alt-${trending}`)
+
+    // update revenue difference
+    document.querySelector('#revenue-difference').innerHTML = `${revenueDifferencePercentage.toFixed(1)}%`;
+  }
+
+  document.addEventListener('DOMContentLoaded', async function() {
+    const revenueData = await getData('./data.json');
+    await setTotals(revenueData.revenue);
+    await drawGraph('monthly-revenue', revenueData.revenue);
+  })
+</script>
+</body>
+</html>
